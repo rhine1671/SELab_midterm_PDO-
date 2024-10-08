@@ -1,0 +1,248 @@
+2. SHOW CODE OF YOUR DBCONFIG.PHP FILE 
+
+<!--Setting up PDO-->
+
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "ibañez";
+$dsn = "mysql:host={$host};dbname={$dbname}";
+
+$pdo = new pdo($dsn, $user, $password);
+$pdo->exec("Set time_zone = '+08:00';");
+
+?>
+
+
+
+3. SHOW CODE DEMONSTRATING FETCH_ALL(). USE PRINT_R(). WITH “<pre>” TAG IN BETWEEN. 
+
+<?php require_once 'core/dbconfig.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Database</title>
+</head>
+<body>
+    <!--Selecting all students from the table-->
+
+    <?php
+    $stmt = $pdo->prepare("SELECT * FROM students");
+    if ($stmt->execute()) {
+        echo "<pre>";
+        print_r($stmt->fetchAll());
+        echo "<pre>";
+    }
+    ?>
+    
+</body>
+</html>
+
+
+
+4. SHOW CODE DEMONSTRATING HOW FETCH() IS USED. USE PRINT_R(). WITH “<pre>” TAG IN BETWEEN. 
+
+<?php require_once 'core/dbconfig.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Database</title>
+</head>
+<body>
+    <!--Selecting student with an id of 5-->
+
+    <?php
+    $stmt = $pdo->prepare("SELECT * FROM students WHERE student_id = 5");
+    if ($stmt->execute()) {
+        echo "<pre>";
+        print_r($stmt->fetch());
+        echo "<pre>";
+    }
+    ?>
+    
+</body>
+</html>
+
+
+
+5. SHOW CODE DEMONSTRATING INSERTION OF RECORD TO YOUR DATABASE
+
+<?php require_once 'core/dbconfig.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Database</title>
+</head>
+<body>
+    <!---->
+
+    <?php
+
+    // Inserting new student to the table
+
+    $query = "INSERT INTO students (Student_ID, name, Grade_Level, Preferred_Subjects, Schedule_Conflicts, Homeroom_Teacher) 
+                VALUES (?,?,?,?,?,?)";
+
+    $stmt = $pdo->prepare($query);
+
+    $executeQuery = $stmt->execute(
+        [11, 'Robert Oppenheimer', 12, '["Physics", "Math"]', 'None', 'Dr. Green']
+    );
+    
+    if ($executeQuery) {
+        echo "Query successful!";
+    }
+    else {
+        echo "Query error";
+    }
+    ?>
+    
+</body>
+</html>
+
+
+6. SHOW CODE DEMONSTRATING DELETION OF RECORD TO YOUR DATABASE
+
+<?php require_once 'core/dbconfig.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Database</title>
+</head>
+<body>
+    <!---->
+
+    <?php
+
+    // Updating a student from the database
+
+    $query = "DELETE FROM students WHERE student_id = 12";
+
+    $stmt = $pdo->prepare($query);
+
+    $executeQuery = $stmt->execute();
+    
+    if ($executeQuery) {
+        echo "Deletion Successful!";
+    }
+    else {
+        echo "Error. Cannot delete query.";
+    }
+    ?>
+    
+</body>
+</html>
+
+
+
+
+7. SHOW CODE DEMONSTRATING UPDATING OF RECORD FROM YOUR DATABASE
+
+<?php require_once 'core/dbconfig.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Database</title>
+</head>
+<body>
+    <!---->
+
+    <?php
+
+    // Updating a student from the database
+
+    $query = "UPDATE students SET name = ?, preferred_subjects = ? WHERE student_id = 9";
+
+    $stmt = $pdo->prepare($query);
+
+    $executeQuery = $stmt->execute(
+        ['Isaac Newton', '["Physics", "Math"]']
+    );
+    
+    if ($executeQuery) {
+        echo "Update successful!";
+    }
+    else {
+        echo "Update error";
+    }
+    ?>
+    
+</body>
+</html>
+
+
+
+8. SHOW CODE DEMONSTRATING AN SQL QUERY’S RESULT SET IS RENDERED ON AN HTML TABLE
+
+<?php require_once 'core/dbconfig.php'; ?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Database</title>
+    <style>
+    table, th, td {
+        border:1px solid black;
+    }
+    </style>
+</head>
+<body>
+    <!---->
+
+    <?php
+
+    // Updating a student from the database
+
+    $query = "SELECT * FROM students";
+
+    $stmt = $pdo->prepare($query);
+    $executeQuery = $stmt->execute();
+    
+    if ($executeQuery) {
+        $allStudents = $stmt->fetchAll();
+        
+    }
+    else {
+        echo "Error. Cannot delete query.";
+    }
+    ?>
+    
+    
+    
+<!--Creating table-->
+<h2>Students' Table</h2>
+    <table style="width:100%">
+  <tr>
+    <th>Student ID</th>
+    <th>Name</th>
+    <th>Grade Level</th>
+    <th>Preferred Subjects</th>
+    <th>Schedule Conflicts</th>
+    <th>Teacher</th>
+  </tr>
+
+  <?php foreach($allStudents as $row) { ?>
+  <tr>
+    <td><?php echo $row['student_id']; ?></td>
+    <td><?php echo $row['name']; ?></td>
+    <td><?php echo $row['grade_level']; ?></td>
+    <td><?php echo $row['preferred_subjects']; ?></td>
+    <td><?php echo $row['schedule_conflicts']; ?></td>
+    <td><?php echo $row['homeroom_teacher']; ?></td>
+  </tr>
+  <?php } ?>
+
+</table>
+</body>
+</html>
+
+
+
+
+
